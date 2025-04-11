@@ -8,10 +8,12 @@
  */
 void swap_ints(int *a, int *b)
 {
+	int tmp;
+
 	if (a == NULL || b == NULL)
 		return;
 
-	int tmp = *a;
+	tmp = *a;
 	*a = *b;
 	*b = tmp;
 }
