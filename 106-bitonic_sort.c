@@ -1,45 +1,39 @@
 #include "sort.h"
 
 /**
- * swap - Swaps two integers and prints array
- * @a: First int
- * @b: Second int
- * @array: Array to print
- * @size: Size of array
+ * swap - Swap two integers
+ * @a: pointer to first integer
+ * @b: pointer to second integer
  */
-void swap(int *a, int *b, int *array, size_t size)
+void swap(int *a, int *b)
 {
 	if (*a != *b)
 	{
-		int tmp = *a;
+		int temp = *a;
 		*a = *b;
-		*b = tmp;
-		print_array(array, size);
+		*b = temp;
 	}
 }
 
 /**
- * bitonic_merge - Merges subarray in given direction
- * @array: Array
- * @low: Start index
- * @count: Count of elements
- * @dir: 1 for UP, 0 for DOWN
- * @size: Size of array
+ * bitonic_merge - Merge bitonic sequence in given direction
+ * @array: array to sort
+ * @low: start index
+ * @count: number of elements
+ * @dir: sorting direction (1 for UP, 0 for DOWN)
+ * @size: size of full array
  */
 void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
 {
-	size_t i;
-	size_t k;
-
 	if (count < 2)
 		return;
 
-	k = count / 2;
-	for (i = 0; i < k; i++)
+	size_t k = count / 2;
+	for (size_t i = low; i < low + k; i++)
 	{
-		if ((dir && array[low + i] > array[low + i + k]) ||
-			(!dir && array[low + i] < array[low + i + k]))
-			swap(&array[low + i], &array[low + i + k], array, size);
+		if ((dir && array[i] > array[i + k]) ||
+			(!dir && array[i] < array[i + k]))
+			swap(&array[i], &array[i + k]);
 	}
 
 	bitonic_merge(array, low, k, dir, size);
@@ -47,21 +41,20 @@ void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
 }
 
 /**
- * bitonic_seq - Recursively creates bitonic sequence
- * @array: Array
- * @low: Start index
- * @count: Count of elements
- * @dir: Direction
- * @size: Size of array
+ * bitonic_seq - Recursively build bitonic sequence
+ * @array: array to sort
+ * @low: starting index
+ * @count: number of elements
+ * @dir: sorting direction (1 for UP, 0 for DOWN)
+ * @size: full array size
  */
 void bitonic_seq(int *array, size_t low, size_t count, int dir, size_t size)
 {
-	size_t k;
-
 	if (count < 2)
 		return;
 
-	k = count / 2;
+	size_t k = count / 2;
+
 	printf("Merging [%lu/%lu] (%s):\n", count, size, dir ? "UP" : "DOWN");
 	print_array(array + low, count);
 
@@ -74,9 +67,9 @@ void bitonic_seq(int *array, size_t low, size_t count, int dir, size_t size)
 }
 
 /**
- * bitonic_sort - Sorts an array using Bitonic Sort
- * @array: Array
- * @size: Size of array
+ * bitonic_sort - Sort array using Bitonic Sort algorithm
+ * @array: array to sort
+ * @size: number of elements
  */
 void bitonic_sort(int *array, size_t size)
 {
