@@ -1,97 +1,84 @@
 #include "deck.h"
 
 /**
- * swap_node_ahead - Swaps a node with the node ahead of it
- * @list: Double pointer to the head of the list
- * @tail: Double pointer to the tail of the list
- * @shaker: Pointer to the node being swapped
+ * card_value - Returns the index of a card based on value
+ * @value: The string value of the card ("Ace" to "King")
+ * Return: Integer index from 0 (Ace) to 12 (King)
  */
-void swap_node_ahead(listint_t **list, listint_t **tail, listint_t **shaker)
+int card_value(const char *value)
 {
-	listint_t *tmp = (*shaker)->next;
+	const char *ranks[] = {
+		"Ace", "2", "3", "4", "5", "6", "7",
+		"8", "9", "10", "Jack", "Queen", "King"
+	};
+	int i;
 
-	if ((*shaker)->prev != NULL)
-		(*shaker)->prev->next = tmp;
-	else
-		*list = tmp;
-
-	tmp->prev = (*shaker)->prev;
-	(*shaker)->next = tmp->next;
-
-	if (tmp->next != NULL)
-		tmp->next->prev = *shaker;
-	else
-		*tail = *shaker;
-
-	(*shaker)->prev = tmp;
-	tmp->next = *shaker;
-	*shaker = tmp;
+	for (i = 0; i < 13; i++)
+	{
+		if (strcmp(value, ranks[i]) == 0)
+			return (i);
+	}
+	return (-1);
 }
 
 /**
- * swap_node_behind - Swaps a node with the node behind it
- * @list: Double pointer to the head of the list
- * @tail: Double pointer to the tail of the list
- * @shaker: Pointer to the node being swapped
+ * compare_cards - Compare two cards in deck
+ * @a: First deck node
+ * @b: Second deck node
+ * Return: Negative if a < b, 0 if equal, positive if a > b
  */
-void swap_node_behind(listint_t **list, listint_t **tail, listint_t **shaker)
+int compare_cards(const deck_node_t *a, const deck_node_t *b)
 {
-	listint_t *tmp = (*shaker)->prev;
+	if (a->card->kind != b->card->kind)
+		return (a->card->kind - b->card->kind);
 
-	if ((*shaker)->next != NULL)
-		(*shaker)->next->prev = tmp;
-	else
-		*tail = tmp;
-
-	tmp->next = (*shaker)->next;
-	(*shaker)->prev = tmp->prev;
-
-	if (tmp->prev != NULL)
-		tmp->prev->next = *shaker;
-	else
-		*list = *shaker;
-
-	(*shaker)->next = tmp;
-	tmp->prev = *shaker;
-	*shaker = tmp;
+	return (card_value(a->card->value) - card_value(b->card->value));
 }
 
 /**
- * cocktail_sort_list - Sorts a doubly linked list using cocktail shaker sort
- * @list: Double pointer to the head of the list
+ * swap_nodes - Swap two nodes in a doubly linked list
+ * @deck: Pointer to head pointer
+ * @a: First node
+ * @b: Second node
  */
-void cocktail_sort_list(listint_t **list)
+void swap_nodes(deck_node_t **deck, deck_node_t *a, deck_node_t *b)
 {
-	listint_t *tail, *shaker;
-	int shaken_not_stirred = 0;
+	if (a->prev)
+		a->prev->next = b;
+	else
+		*deck = b;
 
-	if (list == NULL || *list == NULL || (*list)->next == NULL)
+	if (b->next)
+		b->next->prev = a;
+
+	a->next = b->next;
+	b->prev = a->prev;
+
+	a->prev = b;
+	b->next = a;
+}
+
+/**
+ * sort_deck - Sorts a deck of cards using insertion sort
+ * @deck: Pointer to the head pointer of the deck
+ */
+void sort_deck(deck_node_t **deck)
+{
+	deck_node_t *current, *insertion;
+
+	if (!deck || !*deck || !(*deck)->next)
 		return;
 
-	for (tail = *list; tail->next != NULL;)
-		tail = tail->next;
-
-	while (shaken_not_stirred == 0)
+	current = (*deck)->next;
+	while (current)
 	{
-		shaken_not_stirred = 1;
-		for (shaker = *list; shaker != tail; shaker = shaker->next)
+		insertion = current;
+		current = current->next;
+
+		while (insertion->prev &&
+		       compare_cards(insertion->prev, insertion) > 0)
 		{
-			if (shaker->n > shaker->next->n)
-			{
-				swap_node_ahead(list, &tail, &shaker);
-				print_list((const listint_t *)*list);
-				shaken_not_stirred = 0;
-			}
-		}
-		for (shaker = shaker->prev; shaker != *list;
-		     shaker = shaker->prev)
-		{
-			if (shaker->n < shaker->prev->n)
-			{
-				swap_node_behind(list, &tail, &shaker);
-				print_list((const listint_t *)*list);
-				shaken_not_stirred = 0;
-			}
+			swap_nodes(deck, insertion->prev, insertion);
 		}
 	}
 }
