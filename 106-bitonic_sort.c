@@ -28,16 +28,18 @@ void swap(int *a, int *b, int *array, size_t size)
  */
 void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
 {
-	size_t i, k = count / 2;
+	size_t i;
+	size_t k;
 
 	if (count < 2)
 		return;
 
-	for (i = low; i < low + k; i++)
+	k = count / 2;
+	for (i = 0; i < k; i++)
 	{
-		if ((dir && array[i] > array[i + k]) ||
-		    (!dir && array[i] < array[i + k]))
-			swap(&array[i], &array[i + k], array, size);
+		if ((dir && array[low + i] > array[low + i + k]) ||
+			(!dir && array[low + i] < array[low + i + k]))
+			swap(&array[low + i], &array[low + i + k], array, size);
 	}
 
 	bitonic_merge(array, low, k, dir, size);
@@ -54,11 +56,12 @@ void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
  */
 void bitonic_seq(int *array, size_t low, size_t count, int dir, size_t size)
 {
-	size_t k = count / 2;
+	size_t k;
 
 	if (count < 2)
 		return;
 
+	k = count / 2;
 	printf("Merging [%lu/%lu] (%s):\n", count, size, dir ? "UP" : "DOWN");
 	print_array(array + low, count);
 
