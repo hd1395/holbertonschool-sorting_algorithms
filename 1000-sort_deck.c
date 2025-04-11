@@ -1,4 +1,4 @@
-#include "sort.h"
+#include "deck.h"
 
 /**
  * swap_node_ahead - Swaps a node with the node ahead of it
