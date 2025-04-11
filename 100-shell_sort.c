@@ -1,10 +1,9 @@
 #include "sort.h"
 
 /**
- * shell_sort - Sorts an array of integers in ascending order
- *              using the Shell sort algorithm and Knuth sequence.
- * @array: Pointer to the array to sort
- * @size: Number of elements in the array
+ * shell_sort - Sorts an array using Shell sort with Knuth sequence
+ * @array: Array of integers
+ * @size: Size of the array
  *
  * Return: Nothing
  */
@@ -16,12 +15,11 @@ void shell_sort(int *array, size_t size)
 	if (!array || size < 2)
 		return;
 
-	/* Compute initial Knuth sequence value */
+	/* Generate maximum Knuth gap less than size */
 	while (gap < size / 3)
 		gap = gap * 3 + 1;
 
-	/* Perform shell sort using decreasing gaps */
-	while (gap >= 1)
+	while (gap > 0)
 	{
 		for (i = gap; i < size; i++)
 		{
@@ -34,3 +32,4 @@ void shell_sort(int *array, size_t size)
 		gap = (gap - 1) / 3;
 	}
 }
+
