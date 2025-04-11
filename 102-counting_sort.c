@@ -25,12 +25,13 @@ void counting_sort(int *array, size_t size)
 		count[array[j]]++;
 	for (i = 1; i <= max; i++)
 		count[i] += count[i - 1];
-
 	print_array(count, max + 1);
-
 	sorted = malloc(sizeof(int) * size);
 	if (!sorted)
-		return (free(count), (void)0);
+	{
+		free(count);
+		return;
+	}
 	for (j = size; j > 0; j--)
 		sorted[--count[array[j - 1]]] = array[j - 1];
 	for (j = 0; j < size; j++)
