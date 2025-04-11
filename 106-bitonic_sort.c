@@ -7,9 +7,11 @@
  */
 void swap(int *a, int *b)
 {
+	int temp;
+
 	if (*a != *b)
 	{
-		int temp = *a;
+		temp = *a;
 		*a = *b;
 		*b = temp;
 	}
@@ -25,14 +27,16 @@ void swap(int *a, int *b)
  */
 void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
 {
+	size_t i, k;
+
 	if (count < 2)
 		return;
 
-	size_t k = count / 2;
-	for (size_t i = low; i < low + k; i++)
+	k = count / 2;
+	for (i = low; i < low + k; i++)
 	{
 		if ((dir && array[i] > array[i + k]) ||
-			(!dir && array[i] < array[i + k]))
+		    (!dir && array[i] < array[i + k]))
 			swap(&array[i], &array[i + k]);
 	}
 
@@ -50,16 +54,18 @@ void bitonic_merge(int *array, size_t low, size_t count, int dir, size_t size)
  */
 void bitonic_seq(int *array, size_t low, size_t count, int dir, size_t size)
 {
+	size_t k;
+
 	if (count < 2)
 		return;
 
-	size_t k = count / 2;
+	k = count / 2;
 
 	printf("Merging [%lu/%lu] (%s):\n", count, size, dir ? "UP" : "DOWN");
 	print_array(array + low, count);
 
 	bitonic_seq(array, low, k, 1, size);
-	bitonic_seq(array, low + k, k, 0, size);
+	bitonic_seq(array + k, low + k, k, 0, size);
 	bitonic_merge(array, low, count, dir, size);
 
 	printf("Result [%lu/%lu] (%s):\n", count, size, dir ? "UP" : "DOWN");
