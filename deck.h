@@ -2,6 +2,7 @@
 #define DECK_H
 
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
  * enum kind_e - Enumeration of card suits.
